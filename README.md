@@ -70,6 +70,12 @@ It is based on [SAP Sample for Cloud Foundry](https://github.com/SAP-samples/clo
   This is similiar to doing a `cf push`.
   The deployment is a specification to the Kubernetes about an application you want to run. It includes details about the artifact (docker image), how many replicas, port on which app will be running among others.
   Kubernetes will pull the artifact (**Docker Image**) and deploy the application.
+  A POD will be spun up inside Kubernetes which is the basic unit of compute and it is where your application instance is running.
+  You can see more details by running
+  `kubectl get po -o wide`
+
+  Notice there is an IP assigned to the POD. Each POD get its own IP address which changes if the POD restarts.
+  ![pod-details](assets/pod-details.png)
 
 - Create the routing and expose it over internet
 
@@ -77,8 +83,21 @@ It is based on [SAP Sample for Cloud Foundry](https://github.com/SAP-samples/clo
 
   This is similiar to creating routes in Cloud Foundry.
   Here we create two Kubernetes resources
-  1. A Kubernetes Service that exposes the application pods as a network service with a consistent DNS name and IP inside the Kubernetes Clustrer.
+  1. A Kubernetes Service that exposes the application pods as a network service with a consistent DNS name and IP inside the Kubernetes Cluster.
+
+     You can check the service by running
+     `kubectl get service`
+     The servcie has a different IP than the POD.
+     ![get-service](assets/get-service.png)
+     When a request is made to the service DNS name or service IP, kube-proxy does the necessary NAT and forwards the request to the POD IP.
+
+     The mapping can be seen by looking at the endpoints resource.
+     `kubectl get endpoints`
+     ![endpoints](assets/endpoints.png)
   2. An API Rule which is Kyma way of exposing a internal Kubernetes Service over the internet.
+     Among other things, it will create an Istio virtual Service which is how the application gets exposed over the internet
+     `kubectl get virtualservice`
+     ![vs](assets/virtual-service.png)
 
 ### Try it out
 
