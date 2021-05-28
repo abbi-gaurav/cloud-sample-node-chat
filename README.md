@@ -1,49 +1,90 @@
-# NodeJS Chat Application
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/cloud-sample-node-chat)](https://api.reuse.software/info/github.com/SAP-samples/cloud-sample-node-chat)
+# Node-chat-sample
 
-## Description: 
+![chat-app](assets/chat-app.svg)
+
+## Description
+
 This is a simple chat application that is built on NodeJS. It uses socket.io library which enables real-time, event-based communication. It shows how socket.io rooms can be used to create different chat rooms.
 This application can be run locally as well as on Cloud Foundry landscape.  
 
 Features:
-* Login with name, email Id.
-* Chat with a user who has logged into the same chat room. 
-* Only 2 people are allowed per room. If more people enter, they will be directed to a different room.
 
-## Requirements
-- [Node js](https://nodejs.org/en/download/)
-- [Cloud Foundry Command Line Interface (CLI)](https://github.com/cloudfoundry/cli#downloads)
-- Cloud Foundry trial or enterprise account, [sign up for a Cloud Foundry environment trial account on SAP Business technology Platform(https://developers.sap.com/tutorials/hcp-create-trial-account.html)
-   
-## Download and Installation
-Running the application
+- Login with name, email Id.
+- Chat with a user who has logged into the same chat room. 
+- Only 2 people are allowed per room. If more people enter, they will be directed to a different room.
 
-1. [Clone](https://help.github.com/articles/cloning-a-repository/) this repository
-2. Login to Cloud Foundry by typing the below commands on command prompt
-    ```
-    cf api <api>
-    cf login -u <username> -p <password> 
-    ```
-    `api` - [URL of the Cloud Foundry landscape](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/350356d1dc314d3199dca15bd2ab9b0e.html) that you are trying to connect to.
-    
-    `username` - Email address of your sap.com account.
-    `password` - Your sap.com password
-    
-    Select the org and space when prompted to. For more information on the same refer [link](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/75125ef1e60e490e91eb58fe48c0f9e7.html#loio4ef907afb1254e8286882a2bdef0edf4).
+It is based on [SAP Sample for Cloud Foundry](https://github.com/SAP-samples/cloud-sample-node-chat) and will be deployed on the Kyma runtime.
 
-3. Push the application
+## Prerequisites
 
-    ```cf push --random-route```
-5. Once the application has been pushed successfully, open the URl in a web browser. 
-You can test by opening the same chat room in different browser tabs. 
+- SAP BTP, Kyma runtime instance([You can use a Trial account](https://blogs.sap.com/2020/10/09/kyma-runtime-available-in-trial-and-now-we-are-complete/))
+- [Docker](https://www.docker.com/)
+- `docker login`. This will be required for pushing the docker image to the registry.
+- [make](https://www.gnu.org/software/make/)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
-## Known Issues
-No known issues.
+## Steps
 
-## How to Obtain Support
+### Building the artifact
 
-In case you find a bug, or you need additional support, please open an issue here in GitHub.
+- Clone the repository <https://github.com/abbi-gaurav/cloud-sample-node-chat>
 
-## License
+- `cd cloud-sample-node-chat`
 
-Copyright (c) 2020 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSES/Apache-2.0.txt)file.
+- `export DOCKER_ACCOUNT={provide-your-docker-account}`
+
+- Build the docker image (application artifact)
+
+  `make build-image`
+  The docker image is your binary artifact that will be used for deploying the application on Kyma / Unified runtime. This is one major difference from Cloud Foundry where it was not required to create and store such artifacts.
+
+- Run the image locally (Optional)
+
+  `make run-local`
+
+  Access the chat app at <http://localhost:8089>
+
+- Push the image
+
+  `make push-image`
+  The image is pushed to a docker registry which is available over the internet. For Public registries such as Docker Hub, anyone can download the docker image and use it. In case, it is required to not make the image publicly available, private registries can be used.
+
+### Deploying to Kyma runtime
+
+- Download kubeconfig from the Kyma console.
+  ![get-kubeconfig](assets/get-kubeconfig.png)  
+  - The kubeconfig file contains details about the kubernetes server as well as the credentials.
+  - The chat application will be deployed to this Kubernetes Cluster.
+  - Feel free to check out the contents of the kubeconfig file
+
+- Instruct your kubectl to point to the Kubernetes cluster
+  `export KUBECONFIG=<path-to-kubeconfig>`
+  
+  This together with the previous steps are similiar to doing `cf login`
+
+- Create the deployment. Update the image in [deployment.yaml](kubernetes/deployment.yml)
+  
+  ![deployment](assets/deployment.png)
+
+  `kubectl apply -f kubernetes/deployment.yml`
+
+  This is similiar to doing a `cf push`.
+  The deployment is a specification to the Kubernetes about an application you want to run. It includes details about the artifact (docker image), how many replicas, port on which app will be running among others.
+  Kubernetes will pull the artifact (**Docker Image**) and deploy the application.
+
+- Create the routing and expose it over internet
+
+  `kubectl apply -f kubernetes/routing.yml`
+
+  This is similiar to creating routes in Cloud Foundry.
+  Here we create two Kubernetes resources
+  1. A Kubernetes Service that exposes the application pods as a network service with a consistent DNS name and IP inside the Kubernetes Clustrer.
+  2. An API Rule which is Kyma way of exposing a internal Kubernetes Service over the internet.
+
+### Try it out
+
+The chat app can be acccessed at <https://cloud-sample-node-chat-demo-app.{cluster-domain}>
+
+or access it via the Kyma console UI
+![go-to-default](assets/go-to-default.png)
+![access-api-rule](assets/access-api-rule.png)

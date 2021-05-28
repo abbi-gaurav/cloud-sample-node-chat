@@ -1,10 +1,8 @@
 ---
-# Source: cf-app/templates/app.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: cloud-sample-node-chat-demo-app
-  namespace: docker
 spec:
   selector:
     app: cloud-sample-node-chat-demo-app
@@ -14,18 +12,16 @@ spec:
       targetPort: 8089
 
 ---
-# Source: cf-app/templates/app.yaml
 apiVersion: gateway.kyma-project.io/v1alpha1
 kind: APIRule
 metadata:
   name: cloud-sample-node-chat-demo-app
-  namespace: docker
 spec:
   gateway: kyma-gateway.kyma-system.svc.cluster.local
   service:
     name: cloud-sample-node-chat-demo-app
     port: 8080
-    host: cloud-sample-node-chat-docker.demo-jan.istio.shoot.canary.k8s-hana.ondemand.com
+    host: cloud-sample-node-chat-demo-app
   rules:
     - path: /.*
       methods:

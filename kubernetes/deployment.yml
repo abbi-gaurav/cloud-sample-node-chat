@@ -1,14 +1,12 @@
 ---
-# Source: cf-app/templates/app.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloud-sample-node-chat-demo-app
-  namespace: docker
   labels:
     app: cloud-sample-node-chat-demo-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: cloud-sample-node-chat-demo-app
@@ -17,11 +15,9 @@ spec:
       labels:
         app: cloud-sample-node-chat-demo-app
     spec:
-      imagePullSecrets:
-        - name: demo-registry-credentials-pull
       containers:
         - name: cloud-sample-node-chat-demo-app
-          image: europe-west3-docker.pkg.dev/sap-se-gcp-istio-dev/btp-core-demo/docker/cloud-sample-node-chat:latest
+          image: gabbi/cloud-sample-node-chat:0.0.1 #update to your image
           ports:
             - containerPort: 8089
           volumeMounts:
