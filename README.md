@@ -4,8 +4,7 @@
 
 ## Description
 
-This is a simple chat application that is built on NodeJS. It uses socket.io library which enables real-time, event-based communication. It shows how socket.io rooms can be used to create different chat rooms.
-This application can be run locally as well as on Cloud Foundry landscape.  
+This is a simple chat application that is built on NodeJS. It uses socket.io library which enables real-time, event-based communication. It shows how socket.io rooms can be used to create different chat rooms. 
 
 Features:
 
@@ -13,7 +12,7 @@ Features:
 - Chat with a user who has logged into the same chat room. 
 - Only 2 people are allowed per room. If more people enter, they will be directed to a different room.
 
-It is based on [SAP Sample for Cloud Foundry](https://github.com/SAP-samples/cloud-sample-node-chat) and will be deployed on the Kyma runtime.
+It is based on [SAP Sample for Cloud Foundry](https://github.com/SAP-samples/cloud-sample-node-chat) and will be deployed on the Kyma runtime to demonstrate how such an application can be migrated.
 
 ## Prerequisites
 
