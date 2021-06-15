@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: cloud-sample-node-chat-demo-app
-          image: gabbi/cloud-sample-node-chat:0.0.1 #update to your image
+          image: gabbi/cloud-sample-node-chat:0.0.2 #update to your image
           ports:
             - containerPort: 8089
           volumeMounts:

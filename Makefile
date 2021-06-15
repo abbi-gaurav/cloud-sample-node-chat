@@ -1,6 +1,6 @@
 DOCKER_ACCOUNT?=TBD
 APP?=cloud-sample-node-chat
-VERSION?=0.0.1
+VERSION?=0.0.2
 IMG=${DOCKER_ACCOUNT}/${APP}:${VERSION}
 CHANGE?="TBD"
 

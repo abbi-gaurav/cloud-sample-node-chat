@@ -46,7 +46,9 @@ It is based on [SAP Sample for Cloud Foundry](https://github.com/SAP-samples/clo
 - Push the image
 
   `make push-image`
-  The image is pushed to a docker registry which is available over the internet. For Public registries such as Docker Hub, anyone can download the docker image and use it. In case, it is required to not make the image publicly available, private registries can be used.
+  The image is pushed to a docker registry which is available over the internet. For Public registries such as Docker Hub, anyone can download the docker image and use it. 
+  
+  >Note: For productive use cases, it is recommended to not make the image publicly available, and private docker registries should be used.
 
 ### Deploying to Kyma runtime
 
